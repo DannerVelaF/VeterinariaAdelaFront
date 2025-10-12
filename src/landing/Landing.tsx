@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import Logo from '../assets/images/logo.jpg';
 import bgImage from '../assets/images/bg_1.jpg.webp';
+import { useNavigate } from 'react-router';
 // Datos de productos simulados
 const listaProductos = [
   {
@@ -89,6 +90,8 @@ function Landing() {
     animate: { opacity: 1, x: 0 },
     transition: { duration: 0.6 },
   };
+
+  const navigate = useNavigate();
 
   return (
     <div className="relative w-full font-sans text-gray-800 overflow-x-hidden">
@@ -234,6 +237,7 @@ function Landing() {
                 scale: 1.05,
                 boxShadow: '0 20px 40px rgba(253, 76, 130, 0.4)',
               }}
+              onClick={() => navigate('/login')}
               whileTap={{ scale: 0.95 }}
               className="bg-gradient-to-r from-[#fd4c82] to-[#e63b6f] text-white font-bold px-10 py-4 rounded-full shadow-xl"
             >
