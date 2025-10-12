@@ -40,12 +40,14 @@ function Register() {
   const stepperRef = useRef<Stepper | null>(null);
 
   // Estados generales
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [tiposDocumento, setTiposDocumento] = useState<any[]>([]);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [tipoSeleccionado, setTipoSeleccionado] = useState<any>(null);
-  const [token, setToken] = useState('');
+  const [token, setToken] = useState<string | null>('');
   const [code, setCode] = useState('');
   const [resendTimeout, setResendTimeout] = useState(0);
-  const toast = useRef(null);
+  const toast = useRef<Toast | null>(null);
 
   const showToast = () => {
     toast.current?.show({
@@ -69,7 +71,7 @@ function Register() {
     usuario: '',
     contrasena: '',
     confirmar: '',
-    fechaNacimiento: '',
+    fechaNacimiento: null,
     // Campos de dirección
     zona: '',
     tipoCalle: '',
@@ -115,6 +117,7 @@ function Register() {
   };
 
   // Input genérico
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleChange = (field: string, value: any) => {
     setFormData({ ...formData, [field]: value });
   };
@@ -274,7 +277,6 @@ function Register() {
                     value={formData.fechaNacimiento}
                     onChange={(e) => handleChange('fechaNacimiento', e.value)}
                     className="w-full"
-                    format="YYYY-MM-DD"
                   />
                 </div>
                 {/* Nacionalidad */}
@@ -308,7 +310,7 @@ function Register() {
                   !formData.fechaNacimiento
                 }
                 onClick={() => {
-                  stepperRef.current.nextCallback();
+                  stepperRef.current?.nextCallback();
                 }}
                 className="disabled:opacity-50 flex gap-2 bg-[#fd4c82] hover:bg-[#e63b6f] border-none text-white items-center justify-center rounded-lg px-5 py-3"
               >
@@ -413,7 +415,7 @@ function Register() {
 
             <div className="flex justify-between mt-8">
               <button
-                onClick={() => stepperRef.current.prevCallback()}
+                onClick={() => stepperRef.current?.prevCallback()}
                 className="flex gap-2 border-[#fd4c82] text-[#fd4c82] border items-center justify-center rounded-lg px-5 py-3"
               >
                 <ArrowLeft className="w-4 h-4 mr-2" />
@@ -423,7 +425,7 @@ function Register() {
               <button
                 onClick={() => {
                   enviarCodigo(formData.correo);
-                  stepperRef.current.nextCallback();
+                  stepperRef.current?.nextCallback();
                 }}
                 className="disabled:opacity-50 flex gap-2 bg-[#fd4c82] hover:bg-[#e63b6f] border-none text-white items-center justify-center rounded-lg px-5 py-3"
                 disabled={
@@ -466,7 +468,7 @@ function Register() {
                 </label>
                 <InputOtp
                   value={token}
-                  onChange={(e) => setToken(e.value)}
+                  onChange={(e) => setToken(String(e.value || ''))}
                   length={6}
                   style={{ gap: 8 }}
                   className="justify-center"
@@ -508,7 +510,7 @@ function Register() {
 
                 <button
                   onClick={() => {
-                    stepperRef.current.nextCallback();
+                    stepperRef.current?.nextCallback();
                     submit();
                   }}
                   className={`flex gap-2 bg-[#fd4c82] hover:bg-[#e63b6f] border-none text-white items-center justify-center rounded-lg px-5 py-3 ${
@@ -524,7 +526,7 @@ function Register() {
 
             <div className="flex justify-start mt-8">
               <button
-                onClick={() => stepperRef.current.prevCallback()}
+                onClick={() => stepperRef.current?.prevCallback()}
                 className="flex gap-2 border-[#fd4c82] text-[#fd4c82] border items-center justify-center rounded-lg px-5 py-3"
               >
                 <ArrowLeft className="w-4 h-4 mr-2" />

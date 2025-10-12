@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Bath,
@@ -50,7 +50,6 @@ const listaProductos = [
 function Landing() {
   const [showMenu, setShowMenu] = useState(false);
   const [mostrarMapa, setMostrarMapa] = useState(false);
-  const [currentProduct, setCurrentProduct] = useState(0);
 
   // Animaciones variantes
   const fadeInUp = {

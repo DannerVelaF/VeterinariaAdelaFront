@@ -25,6 +25,7 @@ export const getUbigeos = async () => {
   }
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const registrarUsuario = async (data: any) => {
   try {
     const response = await api.post('auth/registro', data);
