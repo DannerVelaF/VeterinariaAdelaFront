@@ -107,6 +107,7 @@ function Productos() {
       if (searchTerm) params.set('search', searchTerm);
       if (selectedCategoria)
         params.set('categoria', selectedCategoria.toString());
+
       setSearchParams(params);
 
       const filters = {
@@ -142,9 +143,9 @@ function Productos() {
     addItem({
       id: producto.id_producto,
       nombre: producto.nombre_producto,
-      precio: parseFloat(producto.precio_unitario), // ⚠️ Convertir string a number
+      precio: Number(producto.precio_unitario), // ⚠️ Convertir string a number
       imagen: producto.ruta_imagen || '/placeholder-product.jpg',
-      quantity: 1,
+      // quantity: 1,
     });
 
     toast.current?.show({
@@ -309,7 +310,7 @@ function Productos() {
                 footer={
                   <div className="flex justify-between items-center gap-2">
                     <span className="text-xl font-bold text-[#fd4c82] whitespace-nowrap">
-                      S/ {parseFloat(producto.precio_unitario).toFixed(2)}
+                      S/ {Number(producto.precio_unitario).toFixed(2)}
                     </span>
                     <Button
                       icon="pi pi-shopping-cart"

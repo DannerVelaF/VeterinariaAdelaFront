@@ -378,8 +378,9 @@ function Register() {
                       placeholder="Selecciona"
                       value={formData.fechaNacimiento}
                       onChange={(e) => {
-                        handleChange('fechaNacimiento', e.value);
-                        verificarFecha(e.value);
+                        const fecha = e.value instanceof Date ? e.value : null;
+                        handleChange('fechaNacimiento', fecha);
+                        verificarFecha(fecha);
                       }}
                       className="w-full"
                     />
