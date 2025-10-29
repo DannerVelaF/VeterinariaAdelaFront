@@ -1,4 +1,4 @@
-import { Link, useLocation } from 'react-router';
+import { Link } from 'react-router';
 import { useAuthStore } from '../../store/UserStore';
 import { Menubar } from 'primereact/menubar';
 import { Button } from 'primereact/button';
@@ -9,6 +9,7 @@ import { Sidebar } from 'primereact/sidebar';
 import { useCartStore } from '../../store/CartStore';
 import { useState } from 'react';
 import { getImageUrl } from '../../util/helpers/getImageUrl ';
+import type { Producto } from '../../util/Interfaces';
 
 function Navbar() {
   const user = useAuthStore((state) => state.persona);
@@ -17,7 +18,7 @@ function Navbar() {
   const addToCart = useCartStore((state) => state.addItem);
   const updateQuantity = useCartStore((state) => state.updateQuantity);
   const removeFromCart = useCartStore((state) => state.removeItem);
-  const location = useLocation();
+  // const location = useLocation();
 
   const [cartVisible, setCartVisible] = useState(false);
 
@@ -27,7 +28,7 @@ function Navbar() {
   );
 
   // Productos relacionados - vacío por ahora
-  const relatedProducts = [];
+  const relatedProducts: Producto[] = []; // Tipo explícito
 
   const menuItems = [
     {
@@ -228,32 +229,33 @@ function Navbar() {
             <div className="space-y-4">
               {relatedProducts.map((product) => (
                 <div
-                  key={product.id}
+                  key={product.id_producto}
                   className="flex items-center gap-3 p-3 border rounded-lg"
                 >
                   <img
                     src={getImageUrl(product.ruta_imagen)}
-                    alt={product.nombre}
+                    alt={product.nombre_producto}
                     className="w-16 h-16 object-cover rounded"
                   />
                   <div className="flex-1">
-                    <h4 className="font-medium">{product.nombre}</h4>
+                    <h4 className="font-medium">{product.nombre_producto}</h4>
                     <p className="text-sm text-gray-600">
                       {product.descripcion}
                     </p>
                     <div className="flex items-center justify-between mt-2">
                       <span className="font-bold">
-                        s/{product.precio.toFixed(2)}
+                        S/ {Number(product.precio_unitario ?? 0).toFixed(2)}
                       </span>
                       <Button
                         icon="pi pi-plus"
                         className="p-button-text p-button-sm"
                         onClick={() =>
                           addToCart({
-                            id: product.id,
-                            nombre: product.nombre,
-                            precio: product.precio,
-                            imagen: product.imagen,
+                            id: product.id_producto,
+                            nombre: product.nombre_producto,
+                            precio: Number(product.precio_unitario),
+                            imagen:
+                              product.ruta_imagen || '/placeholder-product.jpg',
                           })
                         }
                       />

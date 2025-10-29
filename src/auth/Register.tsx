@@ -156,7 +156,9 @@ function Register() {
         ...formData,
         id_tipo_documento: tipoSeleccionado,
         fechaNacimiento: formData.fechaNacimiento
-          ? new Date(formData.fechaNacimiento).toISOString().split('T')[0]
+          ? new Date(formData.fechaNacimiento as Date)
+              .toISOString()
+              .split('T')[0]
           : null,
       };
 

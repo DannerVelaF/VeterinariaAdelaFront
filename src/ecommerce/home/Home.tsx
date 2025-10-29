@@ -78,8 +78,8 @@ function Home() {
       id: producto.id_producto,
       nombre: producto.nombre_producto,
       precio: Number(producto.precio_unitario), // Convertir a número aquí
-      imagen: producto.ruta_imagen,
-      quantity: 1,
+      imagen: producto.ruta_imagen || '/placeholder-product.jpg', // Valor por defecto
+      // quantity: 1,
     });
   };
   if (loading) {
