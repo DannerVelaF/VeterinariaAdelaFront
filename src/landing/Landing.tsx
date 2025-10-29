@@ -210,7 +210,7 @@ function Landing() {
             transition={{ duration: 0.8 }}
           >
             <motion.h1
-              className="text-6xl md:text-7xl font-black mb-6 leading-tight bg-gradient-to-r from-[#fd4c82] via-purple-500 to-blue-500 bg-clip-text text-transparent"
+              className="text-6xl md:text-7xl font-black mb-6  text-white"
               animate={{ backgroundPosition: ['0%', '100%', '0%'] }}
               transition={{ duration: 5, repeat: Infinity }}
             >
@@ -258,7 +258,9 @@ function Landing() {
             transition={{ duration: 2, repeat: Infinity }}
             className="mt-16"
           >
-            <ChevronDown size={40} className="text-[#fd4c82] mx-auto" />
+            <a href="#sobre-nosotros">
+              <ChevronDown size={40} className="text-[#fd4c82] mx-auto" />
+            </a>
           </motion.div>
         </div>
       </main>

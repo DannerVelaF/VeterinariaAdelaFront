@@ -6,16 +6,48 @@ import './App.css';
 import 'primeicons/primeicons.css';
 import { PrimeReactProvider } from 'primereact/api';
 import 'primereact/resources/themes/lara-light-cyan/theme.css';
+
 import Login from './auth/Login';
 import Register from './auth/Register';
+import PrivateRoute from './PrivateRoute';
+import PublicRoute from './PublicRoute';
+import Home from './ecommerce/home/Home';
+import ForgotPassword from './auth/ForgotPassword';
+import ResetPassword from './auth/ResetPassword';
+import Productos from './ecommerce/products/Productos';
+
 createRoot(document.getElementById('root')!).render(
   <PrimeReactProvider>
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Landing />} />
-        <Route path="/login" element={<Login />} />
+        <Route
+          path="/"
+          element={
+            <PublicRoute>
+              <Landing />
+            </PublicRoute>
+          }
+        />
+        <Route
+          path="/login"
+          element={
+            <PublicRoute>
+              <Login />
+            </PublicRoute>
+          }
+        />
         <Route path="/registro" element={<Register />} />
-        <Route path="/inicio" element={<Landing />} />
+        <Route path="/olvideMiContrasena" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path="/productos" element={<Productos />} />
+        <Route
+          path="/inicio"
+          element={
+            <PrivateRoute>
+              <Home />
+            </PrivateRoute>
+          }
+        />
       </Routes>
     </BrowserRouter>
   </PrimeReactProvider>
