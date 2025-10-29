@@ -157,7 +157,7 @@ function Home() {
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-            {categorias.map((categoria, index) => (
+            {categorias.map((categoria) => (
               <Card
                 key={categoria.categoria_id}
                 className="text-center cursor-pointer hover:shadow-lg transition-all duration-300"
