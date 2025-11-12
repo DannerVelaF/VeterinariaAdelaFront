@@ -3,3 +3,10 @@ html {
   scroll-behavior: smooth;
   scroll-padding-top: 50px; /* Ajusta según la altura del navbar */
 }
+
+
+.p-disabled {
+    background-color: #f9fafb !important;
+    color: #6b7280 !important;
+    cursor: not-allowed !important;
+}

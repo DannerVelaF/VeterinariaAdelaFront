@@ -15,13 +15,20 @@ const PrivateRoute = ({ children }: PrivateRouteProps) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setLoading(false); // deja de mostrar loader después de verificar
-    }, 500); // tiempo para animación de loader
-    return () => clearTimeout(timer);
-  }, []);
+    // Si no hay token, no mostrar loader
+    if (!token) {
+      setLoading(false);
+      return;
+    }
 
-  if (loading) {
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [token]);
+
+  if (loading && token) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gray-100">
         <motion.div
@@ -34,7 +41,6 @@ const PrivateRoute = ({ children }: PrivateRouteProps) => {
   }
 
   if (!token) {
-    // Redirige al login si no hay token
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 

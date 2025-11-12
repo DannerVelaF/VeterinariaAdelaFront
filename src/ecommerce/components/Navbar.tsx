@@ -1,4 +1,4 @@
-import { Link } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 import { useAuthStore } from '../../store/UserStore';
 import { Menubar } from 'primereact/menubar';
 import { Button } from 'primereact/button';
@@ -43,12 +43,14 @@ function Navbar() {
     },
   ];
 
+  const navigate = useNavigate();
+
   const userMenuItems = [
     {
       label: 'Perfil',
       icon: 'pi pi-user',
       command: () => {
-        // Navegar al perfil
+        navigate('/perfil');
       },
     },
     {

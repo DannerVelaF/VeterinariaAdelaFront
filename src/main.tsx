@@ -15,6 +15,7 @@ import Home from './ecommerce/home/Home';
 import ForgotPassword from './auth/ForgotPassword';
 import ResetPassword from './auth/ResetPassword';
 import Productos from './ecommerce/products/Productos';
+import Perfil from './ecommerce/profile/Perfil';
 
 createRoot(document.getElementById('root')!).render(
   <PrimeReactProvider>
@@ -39,7 +40,6 @@ createRoot(document.getElementById('root')!).render(
         <Route path="/registro" element={<Register />} />
         <Route path="/olvideMiContrasena" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
-        <Route path="/productos" element={<Productos />} />
         <Route
           path="/inicio"
           element={
@@ -48,6 +48,8 @@ createRoot(document.getElementById('root')!).render(
             </PrivateRoute>
           }
         />
+        <Route path="/productos" element={<Productos />} />
+        <Route path="/perfil" element={<Perfil />} />
       </Routes>
     </BrowserRouter>
   </PrimeReactProvider>

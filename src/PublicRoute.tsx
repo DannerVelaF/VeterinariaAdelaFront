@@ -3,27 +3,23 @@ import { useEffect, useState } from 'react';
 import type { ReactNode } from 'react';
 import { useAuthStore } from './store/UserStore';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useNavigate } from 'react-router';
+import { Navigate, useLocation } from 'react-router';
+
 interface PublicRouteProps {
   children: ReactNode;
 }
 
 const PublicRoute = ({ children }: PublicRouteProps) => {
   const token = useAuthStore((state) => state.token);
-  const navigate = useNavigate();
+  const location = useLocation();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      if (token) {
-        // si ya hay token, redirige al inicio
-        navigate('/inicio', { replace: true });
-      } else {
-        setLoading(false);
-      }
-    }, 600); // loader corto
+      setLoading(false);
+    }, 600);
     return () => clearTimeout(timer);
-  }, [token, navigate]);
+  }, []);
 
   if (loading) {
     return (
@@ -35,6 +31,12 @@ const PublicRoute = ({ children }: PublicRouteProps) => {
         />
       </div>
     );
+  }
+
+  // Si ya está autenticado, redirigir al inicio
+  if (token) {
+    const from = location.state?.from?.pathname || '/inicio';
+    return <Navigate to={from} replace />;
   }
 
   return (

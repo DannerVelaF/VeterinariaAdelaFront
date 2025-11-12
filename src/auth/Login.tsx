@@ -1,25 +1,12 @@
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
 import { Image } from 'primereact/image';
 import Logo from '../assets/images/logo.jpg';
 import Bg from '../assets/images/loginImage.jpg';
-import { useNavigate } from 'react-router';
 import { login } from '../service/api';
 import { Toast } from 'primereact/toast';
-import { useAuthStore } from '../store/UserStore';
 function Login() {
-  const navigate = useNavigate();
-
-  const token = useAuthStore((state) => state.token);
-
-  useEffect(() => {
-    if (token) {
-      // Si hay un token, redirige al inicio
-      navigate('/inicio', { replace: true });
-    }
-  }, [token, navigate]);
-
   const [mostrarContraseña, setMostrarContraseña] = useState(false);
   const [contraseña, setContraseña] = useState('');
   const [correo, setCorreo] = useState('');
@@ -50,20 +37,22 @@ function Login() {
 
   const submit = async () => {
     setLoading(true);
-    const data = {
-      correo: correo,
-      contrasena: contraseña,
-    };
-    const response = await login(data);
-    if (response) {
-      showToast();
-      setTimeout(() => {
-        navigate('/inicio');
-        setLoading(false);
-      }, 1500);
-    } else {
-      showErrorToast();
+    try {
+      const data = {
+        correo: correo,
+        contrasena: contraseña,
+      };
+
+      const response = await login(data);
+
+      if (response) {
+        showToast();
+        
+        setLoading(false); // Quitar loading inmediatamente
+      }
+    } catch (error: any) {
       setLoading(false);
+      showErrorToast();
     }
   };
 

@@ -10,8 +10,8 @@ import type {
 import { useAuthStore } from '../store/UserStore';
 
 const api = axios.create({
-  baseURL: 'http://163.176.152.20/api/v1/',
-  // baseURL: 'http://localhost:8000/api/v1/',
+  // baseURL: 'http://163.176.152.20/api/v1/',
+  baseURL: 'http://localhost:8000/api/v1/',
 });
 
 // 🔹 INTERCEPTOR PARA AGREGAR TOKEN AUTOMÁTICAMENTE
@@ -32,15 +32,17 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
-      // Token expirado o inválido
+    // No redirigir para errores de login
+    if (
+      error.response?.status === 401 &&
+      !error.config.url.includes('auth/login')
+    ) {
       useAuthStore.getState().logout();
       window.location.href = '/login';
     }
     return Promise.reject(error);
   }
 );
-
 // Obtener todos los tipo documento
 export const getTipoDocumento = async () => {
   try {
@@ -77,11 +79,21 @@ export const login = async (request: LoginRequest) => {
   try {
     const response = await api.post('auth/login', request);
     const { data, token } = response.data;
-    useAuthStore.getState().setAuth(data, token);
+
+    if (token) {
+      useAuthStore.getState().setAuth(data, token);
+    }
+
     return response.data;
-  } catch (error) {
-    console.log(error);
-    throw error;
+  } catch (error: any) {
+    // Manejar específicamente errores de autenticación
+    if (error.response?.status === 401) {
+      throw new Error('Credenciales incorrectas');
+    } else if (error.response?.status === 404) {
+      throw new Error('Usuario no encontrado');
+    } else {
+      throw new Error('Error al iniciar sesión');
+    }
   }
 };
 
@@ -202,4 +214,31 @@ export const getProductosDestacados = async (): Promise<
     console.error('Error al obtener productos destacados:', error);
     return [];
   }
+};
+
+
+export const verificarDocumentoExistente = async (dni: string, tipoDocumentoId: number) => {
+    try {
+        const response = await api.post('auth/verificar-documento', {
+            dni,
+            tipo_documento_id: tipoDocumentoId
+        });
+        return response.data;
+    } catch (error) {
+        console.log('Error al verificar documento:', error);
+        throw error;
+    }
+};
+
+
+export const verificarUsuarioExistente = async (usuario: string) => {
+    try {
+        const response = await api.post('auth/verificar-usuario', {
+            usuario: usuario
+        });
+        return response.data;
+    } catch (error) {
+        console.log('Error al verificar usuario:', error);
+        throw error;
+    }
 };
