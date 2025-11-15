@@ -18,7 +18,7 @@ function Navbar() {
   const user = useAuthStore((state) => state.persona);
   const logout = useAuthStore((state) => state.logout);
   const cartItems = useCartStore((state) => state.items);
-  const addToCart = useCartStore((state) => state.addItem);
+  // const addToCart = useCartStore((state) => state.addItem);
   const updateQuantity = useCartStore((state) => state.updateQuantity);
   const removeFromCart = useCartStore((state) => state.removeItem);
 
@@ -87,7 +87,7 @@ function Navbar() {
   );
 
   // Productos relacionados - vacío por ahora
-  const relatedProducts: Producto[] = []; // Tipo explícito
+  // const relatedProducts: Producto[] = []; // Tipo explícito
 
   const hasInsufficientStock = cartItems.some((item) => {
     const availableStock = getAvailableStock(item.id);
