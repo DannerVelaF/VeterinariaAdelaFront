@@ -119,6 +119,7 @@ export interface UbigeoData {
   departamento: string;
   provincia: string;
   distrito: string;
+  codigo_ubigeo: string;
 }
 
 // util/Interfaces.ts

@@ -1,5 +1,5 @@
 import { Link } from 'react-router';
-import { useCartStore } from '../../store/CartStore';
+import { useCartStore } from '../../../store/CartStore';
 import { Button } from 'primereact/button';
 import { Badge } from 'primereact/badge';
 import { InputText } from 'primereact/inputtext';

@@ -251,7 +251,7 @@ export default function Perfil() {
               ...persona,
               usuario: { ...persona.usuario, usuario: editValue },
             },
-            persona.token || ''
+            useAuthStore.getState().token || '' // ← Obtener token del store
           );
         }
 
@@ -371,7 +371,6 @@ export default function Perfil() {
           setDepartamentos(response.data);
         }
       } catch (error) {
-        console.error('Error cargando departamentos:', error.message);
         toast.current?.show({
           severity: 'error',
           summary: 'Error',

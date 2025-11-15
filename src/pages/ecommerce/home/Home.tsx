@@ -19,6 +19,7 @@ import { getImageUrl } from '../../../util/helpers/getImageUrl ';
 
 function Home() {
   const user = useAuthStore((state) => state.persona);
+  const userId = useAuthStore((state) => state.persona?.usuario.id_usuario); // ← Obtén el ID del usuario
   const addToCart = useCartStore((state) => state.addItem);
   const [categorias, setCategorias] = useState<CategoriaConConteo[]>([]);
   const [productosDestacados, setProductosDestacados] = useState<
@@ -73,12 +74,16 @@ function Home() {
   }, []);
 
   const handleAddToCart = (producto: ProductoDestacado) => {
-    addToCart({
-      id: producto.id_producto,
-      nombre: producto.nombre_producto,
-      precio: Number(producto.precio_unitario),
-      imagen: producto.ruta_imagen || '/placeholder-product.jpg',
-    });
+    addToCart(
+      {
+        id: producto.id_producto,
+        nombre: producto.nombre_producto,
+        precio: Number(producto.precio_unitario),
+        imagen: producto.ruta_imagen || '/placeholder-product.jpg',
+      },
+      producto.stock_actual, // ← Segundo argumento: stock disponible
+      userId || 0 // ← Tercer argumento: ID del usuario (usa 0 si no hay usuario)
+    );
   };
 
   if (loading) {

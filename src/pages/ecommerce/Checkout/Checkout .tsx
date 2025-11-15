@@ -26,9 +26,9 @@ function Checkout() {
   );
   const [metodoExpandido, setMetodoExpandido] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);
-  const [productosStock, setProductosStock] = useState<{
-    [key: number]: number;
-  }>({});
+  // const [productosStock, setProductosStock] = useState<{
+  //   [key: number]: number;
+  // }>({});
 
   // Calcular totales
   const subtotal = cartItems.reduce(
@@ -123,16 +123,16 @@ function Checkout() {
 
     setLoading(true);
     try {
-      const ventaData = {
-        id_cliente: user?.id_persona,
-        items: cartItems.map((item) => ({
-          id_producto: item.id,
-          cantidad: item.quantity,
-          precio_unitario: item.precio,
-        })),
-        total: total,
-        id_metodo_pago: metodoSeleccionado,
-      };
+      // const ventaData = {
+      //   id_cliente: user?.id_persona,
+      //   items: cartItems.map((item) => ({
+      //     id_producto: item.id,
+      //     cantidad: item.quantity,
+      //     precio_unitario: item.precio,
+      //   })),
+      //   total: total,
+      //   id_metodo_pago: metodoSeleccionado,
+      // };
 
       // TODO: Llamar a la API para crear la venta
       // const response = await crearVenta(ventaData);

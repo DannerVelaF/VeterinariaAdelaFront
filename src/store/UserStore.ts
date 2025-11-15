@@ -17,6 +17,7 @@ interface Persona {
   nombre: string;
   apellido_paterno: string;
   apellido_materno: string;
+  numero_telefono_personal: number;
   correo: string;
   usuario: Usuario;
   cliente: Cliente;
