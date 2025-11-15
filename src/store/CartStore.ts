@@ -159,6 +159,7 @@ export const useCartStore = create<CartStore>()(
       },
 
       canAddItem: (productId, requestedQuantity, availableStock) => {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { items } = get();
         return requestedQuantity <= availableStock;
       },
