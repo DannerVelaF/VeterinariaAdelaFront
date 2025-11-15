@@ -123,6 +123,8 @@ function Register() {
     } else {
       setDocumentoVerificado(false);
       setMensajeDocumento('');
+      console.log(mensajeDocumento);
+
       // Limpiar datos si el documento cambia o se borra
       if (formData.numeroDocumento.trim().length === 0) {
         limpiarDatosPersonales();

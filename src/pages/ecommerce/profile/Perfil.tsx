@@ -1,5 +1,5 @@
 import { TabPanel, TabView } from 'primereact/tabview';
-import { use, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useAuthStore } from '../../../store/UserStore';
 import {
   getDepartamentos,
