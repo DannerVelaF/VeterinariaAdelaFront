@@ -12,7 +12,7 @@ import {
   Sparkles,
   ArrowLeft,
 } from 'lucide-react';
-import { verifyResetToken, resetPassword } from '../service/api';
+import { verifyResetToken, resetPassword } from '../../service/api';
 
 function ResetPassword() {
   const [searchParams] = useSearchParams();

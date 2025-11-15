@@ -2,9 +2,9 @@ import { useRef, useState } from 'react';
 import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
 import { Image } from 'primereact/image';
-import Logo from '../assets/images/logo.jpg';
-import Bg from '../assets/images/loginImage.jpg';
-import { login } from '../service/api';
+import Logo from '../../assets/images/logo.jpg';
+import Bg from '../../assets/images/loginImage.jpg';
+import { login } from '../../service/api';
 import { Toast } from 'primereact/toast';
 function Login() {
   const [mostrarContraseña, setMostrarContraseña] = useState(false);
@@ -26,11 +26,11 @@ function Login() {
     });
   };
 
-  const showErrorToast = () => {
+  const showErrorToast = (detalle: string | null = null) => {
     toast.current?.show({
       severity: 'error',
       summary: 'Error al iniciar sesión',
-      detail: 'Verifique su correo y contraseña',
+      detail: detalle || 'Verifique su correo y contraseña',
       life: 3000,
     });
   };
@@ -47,12 +47,38 @@ function Login() {
 
       if (response) {
         showToast();
-        
-        setLoading(false); // Quitar loading inmediatamente
+        setLoading(false);
       }
     } catch (error: any) {
       setLoading(false);
-      showErrorToast();
+      console.log(error);
+
+      // 🔹 CORRECCIÓN: Acceder correctamente al mensaje de error
+      let errorMessage = 'Error al iniciar sesión';
+
+      if (error.response && error.response.data) {
+        // Caso 1: Error con response.data
+        const errorData = error.response.data;
+
+        if (errorData.error) {
+          // Para errores como "Acceso restringido..."
+          errorMessage = errorData.error;
+        } else if (errorData.message) {
+          errorMessage = errorData.message;
+        } else if (errorData.detalle) {
+          errorMessage = errorData.detalle;
+        }
+      } else if (error.error) {
+        // Caso 2: Error directo en error.error
+        errorMessage = error.error;
+      } else if (error.detalle) {
+        // Caso 3: Error en error.detalle
+        errorMessage = error.detalle;
+      } else if (error.message) {
+        // Caso 4: Error general
+        errorMessage = error.message;
+      }
+      showErrorToast(errorMessage);
     }
   };
 

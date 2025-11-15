@@ -1,6 +1,6 @@
+// pages/Productos.tsx
 import { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router';
-import Navbar from '../components/Navbar';
 import { Card } from 'primereact/card';
 import { Button } from 'primereact/button';
 import { Dropdown } from 'primereact/dropdown';
@@ -11,11 +11,12 @@ import { Tag } from 'primereact/tag';
 import { Skeleton } from 'primereact/skeleton';
 import { Toast } from 'primereact/toast';
 import { useRef } from 'react';
-import { useCartStore } from '../../store/CartStore';
-import { useAuthStore } from '../../store/UserStore';
-import { getCategorias, getProductos } from '../../service/api';
-import type { Categoria, Producto } from '../../util/Interfaces';
-import { getImageUrl } from '../../util/helpers/getImageUrl ';
+import { useCartStore } from '../../../store/CartStore';
+import { useAuthStore } from '../../../store/UserStore';
+import { getCategorias, getProductos } from '../../../service/api';
+import type { Categoria, Producto } from '../../../util/Interfaces';
+import { getImageUrl } from '../../../util/helpers/getImageUrl ';
+import { useCartValidation } from '../../../hooks/useCartValidation ';
 
 function Productos() {
   const [productos, setProductos] = useState<Producto[]>([]);
@@ -37,7 +38,6 @@ function Productos() {
   const toast = useRef<Toast>(null);
 
   useEffect(() => {
-    // 🔹 VERIFICAR AUTENTICACIÓN
     if (!user) {
       toast.current?.show({
         severity: 'warn',
@@ -128,6 +128,7 @@ function Productos() {
     }
   };
 
+  useCartValidation();
   const handleAddToCart = (producto: Producto) => {
     if (!user) {
       toast.current?.show({
@@ -140,20 +141,37 @@ function Productos() {
       return;
     }
 
-    addItem({
-      id: producto.id_producto,
-      nombre: producto.nombre_producto,
-      precio: Number(producto.precio_unitario), // ⚠️ Convertir string a number
-      imagen: producto.ruta_imagen || '/placeholder-product.jpg',
-      // quantity: 1,
-    });
+    // 🔹 Validar stock
+    if (producto.stock_actual <= 0) {
+      toast.current?.show({
+        severity: 'error',
+        summary: 'Sin stock',
+        detail: 'Este producto no está disponible en este momento',
+        life: 3000,
+      });
+      return;
+    }
 
-    toast.current?.show({
-      severity: 'success',
-      summary: '¡Agregado!',
-      detail: `${producto.nombre_producto} agregado al carrito`,
-      life: 2000,
-    });
+    try {
+      // 🔹 Pasar el userId al agregar item
+      addItem(
+        {
+          id: producto.id_producto,
+          nombre: producto.nombre_producto,
+          precio: Number(producto.precio_unitario),
+          imagen: producto.ruta_imagen || '/placeholder-product.jpg',
+        },
+        producto.stock_actual,
+        user.id_persona // 🔹 Nuevo parámetro
+      );
+    } catch (error: any) {
+      toast.current?.show({
+        severity: 'warn',
+        summary: 'Stock insuficiente',
+        detail: error.message || 'No hay suficiente stock disponible',
+        life: 3000,
+      });
+    }
   };
 
   const categoriaOptions = [
@@ -182,25 +200,20 @@ function Productos() {
     return 'En stock';
   };
 
-  // 🔹 MOSTRAR LOADING MIENTRAS VERIFICA AUTENTICACIÓN
   if (!user) {
     return (
-      <div className="min-h-screen bg-gray-50">
-        <Navbar />
-        <div className="flex justify-center items-center h-64">
-          <div className="text-center">
-            <i className="pi pi-spin pi-spinner text-4xl text-[#fd4c82] mb-4"></i>
-            <p>Verificando autenticación...</p>
-          </div>
+      <div className="flex justify-center items-center h-64">
+        <div className="text-center">
+          <i className="pi pi-spin pi-spinner text-4xl text-[#fd4c82] mb-4"></i>
+          <p>Verificando autenticación...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="bg-gray-50">
       <Toast ref={toast} />
-      <Navbar />
 
       <main className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
         {/* Header y Filtros */}

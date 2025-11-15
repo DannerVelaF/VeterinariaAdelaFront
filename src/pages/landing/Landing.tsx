@@ -11,8 +11,8 @@ import {
   Wind,
   ChevronDown,
 } from 'lucide-react';
-import Logo from '../assets/images/logo.jpg';
-import bgImage from '../assets/images/bg_1.jpg.webp';
+import Logo from '../../assets/images/logo.jpg';
+import bgImage from '../../assets/images/bg_1.jpg.webp';
 import { useNavigate } from 'react-router';
 // Datos de productos simulados
 const listaProductos = [

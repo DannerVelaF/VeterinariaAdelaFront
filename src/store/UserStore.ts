@@ -1,10 +1,15 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { useCartStore } from './CartStore';
 
 interface Usuario {
   id_usuario: number;
   usuario: string;
   estado: string;
+}
+
+interface Cliente {
+  id_cliente: number;
 }
 
 interface Persona {
@@ -14,6 +19,7 @@ interface Persona {
   apellido_materno: string;
   correo: string;
   usuario: Usuario;
+  cliente: Cliente;
 }
 
 interface AuthState {
@@ -29,12 +35,13 @@ export const useAuthStore = create(
       persona: null,
       token: null,
       setAuth: (persona, token) => set({ persona, token }),
-      logout: () => set({ persona: null, token: null }),
+      logout: () => {
+        set({ persona: null, token: null });
+        useCartStore.getState().clearCart();
+      },
     }),
     {
       name: 'auth-storage', // nombre de la clave en localStorage
     }
   )
 );
-
-

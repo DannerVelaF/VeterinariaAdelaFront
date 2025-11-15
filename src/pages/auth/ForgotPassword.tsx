@@ -5,7 +5,7 @@ import { Button } from 'primereact/button';
 import { Toast } from 'primereact/toast';
 import { motion } from 'framer-motion';
 import { Mail, ArrowRight, CheckCircle2 } from 'lucide-react';
-import { requestPasswordReset } from '../service/api';
+import { requestPasswordReset } from '../../service/api';
 
 function ForgotPassword() {
   const [email, setEmail] = useState('');

@@ -1,6 +1,4 @@
 // pages/Home.tsx
-import { useAuthStore } from '../../store/UserStore';
-import Navbar from '../components/Navbar';
 import { Button } from 'primereact/button';
 import { Card } from 'primereact/card';
 import { Tag } from 'primereact/tag';
@@ -9,14 +7,15 @@ import { useEffect, useState } from 'react';
 import {
   getProductosPorCategoria,
   getProductosDestacados,
-} from '../../service/api';
-import { useCartStore } from '../../store/CartStore';
-import Logo from '../../assets/images/logo.jpg';
+} from '../../../service/api';
+import { useCartStore } from '../../../store/CartStore';
+import { useAuthStore } from '../../../store/UserStore';
+import Logo from '../../../assets/images/logo.jpg';
 import type {
   CategoriaConConteo,
   ProductoDestacado,
-} from '../../util/Interfaces';
-import { getImageUrl } from '../../util/helpers/getImageUrl ';
+} from '../../../util/Interfaces';
+import { getImageUrl } from '../../../util/helpers/getImageUrl ';
 
 function Home() {
   const user = useAuthStore((state) => state.persona);
@@ -77,26 +76,21 @@ function Home() {
     addToCart({
       id: producto.id_producto,
       nombre: producto.nombre_producto,
-      precio: Number(producto.precio_unitario), // Convertir a número aquí
-      imagen: producto.ruta_imagen || '/placeholder-product.jpg', // Valor por defecto
-      // quantity: 1,
+      precio: Number(producto.precio_unitario),
+      imagen: producto.ruta_imagen || '/placeholder-product.jpg',
     });
   };
+
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50">
-        <Navbar />
-        <div className="flex justify-center items-center min-h-[50vh]">
-          <i className="pi pi-spin pi-spinner text-4xl text-[#fd4c82]"></i>
-        </div>
+      <div className="flex justify-center items-center min-h-[50vh]">
+        <i className="pi pi-spin pi-spinner text-4xl text-[#fd4c82]"></i>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50">
-      <Navbar />
-
+    <>
       {/* Hero Section */}
       <section className="bg-white py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -159,7 +153,7 @@ function Home() {
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
             {categorias.map((categoria) => (
               <Card
-                key={categoria.categoria_id}
+                key={`categoria-${categoria.categoria_id}-${categoria.nombre_categoria}`}
                 className="text-center cursor-pointer hover:shadow-lg transition-all duration-300"
               >
                 <div className="p-4">
@@ -199,7 +193,7 @@ function Home() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {productosDestacados.map((producto) => (
               <Card
-                key={producto.id_producto}
+                key={`producto-${producto.id_producto}-${producto.nombre_producto}`}
                 className="shadow-lg hover:shadow-xl transition-all duration-300 h-full flex flex-col"
                 header={
                   <div className="relative h-48">
@@ -307,7 +301,7 @@ function Home() {
           </div>
         </div>
       </footer>
-    </div>
+    </>
   );
 }
 
