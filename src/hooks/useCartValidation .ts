@@ -27,10 +27,6 @@ export const useCartValidation = () => {
     }
 
     // 🔹 Verificar expiración cada vez que se accede al carrito
-    const wasExpired = clearExpiredCart();
-    if (wasExpired) {
-      console.log('Carrito expirado - limpiado automáticamente');
-    }
   }, [user, setUserId, isValidCart, clearExpiredCart, clearCart]);
 
   return {
