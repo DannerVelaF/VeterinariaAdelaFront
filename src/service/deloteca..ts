@@ -1,8 +1,8 @@
 // services/decolectaApi.ts
 // const DECOLECTA_API_KEY = 'sk_10646.YwmGLGUlUdXLUFCDp8h3ZKOGonF1g2Ls';
 // const DECOLECTA_BASE_URL = 'https://api.decolecta.com/v1';
-const API_BASE_URL = 'http://localhost:8000/api/v1';
-
+// const API_BASE_URL = 'http://localhost:8000/api/v1';
+const API_BASE_URL = '/api/v1/';
 // Interfaces para la respuesta de Decolecta
 export interface PersonaDecolecta {
   document_number: string;
