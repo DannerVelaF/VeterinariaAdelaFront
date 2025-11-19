@@ -343,7 +343,7 @@ function Navbar() {
               <span>S/ {tax.toFixed(2)}</span>
             </div>
             <div className="flex justify-between font-bold text-lg mt-3 pt-3 border-t">
-              <span>Total incl. IVA</span>
+              <span>Total incl. IGV</span>
               <span>S/ {total.toFixed(2)}</span>
             </div>
           </div>

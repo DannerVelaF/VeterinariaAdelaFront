@@ -410,7 +410,7 @@ function Checkout() {
                           </h4>
                           <div className="bg-white p-4 rounded-lg border inline-block">
                             <img
-                              src={metodo.codigo_qr}
+                              src={getImageUrl(metodo.codigo_qr)}
                               alt={`QR ${metodo.nombre_metodo}`}
                               className="w-32 h-32 object-contain mx-auto"
                             />

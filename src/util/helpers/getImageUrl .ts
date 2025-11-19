@@ -6,4 +6,5 @@ export const getImageUrl = (rutaImagen: string | null): string => {
 
   // Si es una ruta relativa, agregar la base URL del servidor
   return `http://163.176.152.20/storage/${rutaImagen}`;
+  // return `http://localhost:8000/api/v1/storage/${rutaImagen}`;
 };

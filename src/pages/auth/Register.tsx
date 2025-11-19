@@ -8,7 +8,6 @@ import { Calendar } from 'primereact/calendar';
 import { Toast } from 'primereact/toast';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Message } from 'primereact/message';
-
 import {
   User,
   FileText,
@@ -35,6 +34,7 @@ import {
   verificarUsuarioExistente,
 } from '../../service/api';
 import { useNavigate } from 'react-router';
+import { consultarDNI } from '../../service/deloteca.';
 
 interface TipoDocumento {
   id_tipo_documento: number;
@@ -114,7 +114,6 @@ function Register() {
 
   useEffect(() => {
     if (tipoSeleccionado && formData.numeroDocumento.trim().length >= 8) {
-      // Usar debounce para evitar muchas llamadas
       const timeoutId = setTimeout(() => {
         verificarDocumento();
       }, 1000);
@@ -123,15 +122,107 @@ function Register() {
     } else {
       setDocumentoVerificado(false);
       setMensajeDocumento('');
-      console.log(mensajeDocumento);
 
-      // Limpiar datos si el documento cambia o se borra
       if (formData.numeroDocumento.trim().length === 0) {
         limpiarDatosPersonales();
-        setCamposBloqueados(false); // ← Agregar esta línea también
+        setCamposBloqueados(false);
       }
     }
   }, [formData.numeroDocumento, tipoSeleccionado]);
+
+  // Nueva función para consultar documentos externos
+  // En tu componente Register, actualiza la función consultarDocumentoExterno:
+  const consultarDocumentoExterno = async () => {
+    const numeroDocumento = formData.numeroDocumento.trim();
+
+    try {
+      let consultaExterna;
+
+      // Determinar qué API usar según el tipo de documento
+      if (tipoSeleccionado === 1) {
+        // Asumiendo que 1 es DNI
+        consultaExterna = await consultarDNI(numeroDocumento);
+      } else {
+        // Para otros tipos de documento, no hacemos consulta externa
+        setDocumentoVerificado(true);
+        setMensajeDocumento('Documento disponible para registro');
+        limpiarDatosPersonales();
+        return;
+      }
+
+      console.log('Respuesta completa:', consultaExterna); // Para debug
+
+      if (consultaExterna.success && consultaExterna.data) {
+        // Documento encontrado en RENIEC/SUNAT - prellenar datos
+        setDocumentoVerificado(true);
+        setMensajeDocumento('Documento verificado en RENIEC/SUNAT');
+
+        const datosExternos = consultaExterna.data;
+        console.log('Datos externos:', datosExternos); // Para debug
+
+        // Prellenar con datos de la consulta externa (ESTRUCTURA CORREGIDA)
+        if (tipoSeleccionado === 1) {
+          // DNI
+          handleChange('nombre', datosExternos.first_name || '');
+          handleChange('apellidoPaterno', datosExternos.first_last_name || '');
+          handleChange('apellidoMaterno', datosExternos.second_last_name || '');
+          handleChange('nacionalidad', 'Peruana');
+
+          // Mostrar toast de éxito
+          showToast(
+            'success',
+            'Datos encontrados',
+            'Información obtenida de RENIEC'
+          );
+
+          console.log('Campos actualizados:', {
+            // Para debug
+            nombre: datosExternos.first_name,
+            apellidoPaterno: datosExternos.first_last_name,
+            apellidoMaterno: datosExternos.second_last_name,
+          });
+        } else if (tipoSeleccionado === 2) {
+          // RUC
+          // Para RUC, estructura puede ser diferente
+          handleChange(
+            'nombre',
+            datosExternos.razonSocial || datosExternos.first_name || ''
+          );
+          handleChange('nacionalidad', 'Peruana');
+          showToast(
+            'success',
+            'Datos encontrados',
+            'Información obtenida de SUNAT'
+          );
+        }
+      } else {
+        // Documento no encontrado en RENIEC/SUNAT pero disponible para registro
+        setDocumentoVerificado(true);
+        setMensajeDocumento('Documento disponible para registro');
+        limpiarDatosPersonales();
+
+        if (consultaExterna.error) {
+          showToast(
+            'info',
+            'Consulta externa',
+            'No se encontraron datos externos, complete manualmente'
+          );
+        }
+      }
+    } catch (error) {
+      // Si falla la consulta externa, permitir registro manual
+      setDocumentoVerificado(true);
+      setMensajeDocumento(
+        'Documento disponible para registro (verificación externa falló)'
+      );
+      limpiarDatosPersonales();
+      showToast(
+        'warning',
+        'Advertencia',
+        'No se pudo verificar externamente, complete los datos manualmente'
+      );
+    }
+  };
 
   useEffect(() => {
     if (formData.usuario.trim().length >= 3) {
@@ -228,6 +319,7 @@ function Register() {
     setMensajeDocumento('');
 
     try {
+      // Primero verificamos en nuestra base de datos
       const response = await verificarDocumentoExistente(
         formData.numeroDocumento,
         tipoSeleccionado
@@ -242,7 +334,7 @@ function Register() {
             'Documento verificado - Completa tu usuario y contraseña'
           );
           setCamposBloqueados(true);
-          // Prellenar datos de la persona (solo lectura)
+
           if (response.persona) {
             handleChange('nombre', response.persona.nombre || '');
             handleChange(
@@ -262,7 +354,6 @@ function Register() {
               response.persona.numero_telefono_personal || ''
             );
 
-            // Si hay fecha de nacimiento, formatearla para el Calendar
             if (response.persona.fecha_nacimiento) {
               const fechaNac = new Date(response.persona.fecha_nacimiento);
               handleChange('fechaNacimiento', fechaNac);
@@ -274,22 +365,18 @@ function Register() {
             }
           }
 
-          // Ir automáticamente al paso 2
           setTimeout(() => {
             stepperRef.current?.nextCallback();
           }, 1000);
         } else {
           // CASO 3: Persona existe Y tiene usuario - BLOQUEAR
           setDocumentoVerificado(false);
-
-          // SOLO mostrar toast, no mensaje en el campo
           showToast(
             'error',
             'Usuario ya registrado',
             'Ya tienes una cuenta en nuestro sistema. Por favor inicia sesión.'
           );
 
-          // Redirigir al login después de 3 segundos
           setTimeout(() => {
             navigate('/login', {
               state: {
@@ -301,12 +388,8 @@ function Register() {
           }, 3000);
         }
       } else {
-        // CASO 1: Documento NO existe - registro completo
-        setDocumentoVerificado(true);
-        setMensajeDocumento('Documento disponible para registro');
-
-        // Limpiar datos si antes había un documento existente
-        limpiarDatosPersonales();
+        // CASO 1: Documento NO existe - consultar a RENIEC/SUNAT
+        await consultarDocumentoExterno();
       }
     } catch (error: any) {
       setDocumentoVerificado(false);
@@ -649,6 +732,21 @@ function Register() {
                   </div>
                 </div>
               </div>
+              {formData.nombre && !camposBloqueados && (
+                <div className="bg-green-50 border border-green-200 rounded-lg p-3 mb-4">
+                  <div className="flex items-center gap-2">
+                    <ShieldCheck className="w-4 h-4 text-green-600" />
+                    <span className="text-green-700 text-sm font-medium">
+                      Datos obtenidos de{' '}
+                      {tipoSeleccionado === 1 ? 'RENIEC' : 'SUNAT'}
+                    </span>
+                  </div>
+                  <p className="text-green-600 text-xs mt-1">
+                    Verifica que la información sea correcta y completa los
+                    campos faltantes.
+                  </p>
+                </div>
+              )}
 
               <div className="flex justify-end mt-8">
                 <button
