@@ -181,19 +181,6 @@ function Register() {
             apellidoPaterno: datosExternos.first_last_name,
             apellidoMaterno: datosExternos.second_last_name,
           });
-        } else if (tipoSeleccionado === 2) {
-          // RUC
-          // Para RUC, estructura puede ser diferente
-          handleChange(
-            'nombre',
-            datosExternos.razonSocial || datosExternos.first_name || ''
-          );
-          handleChange('nacionalidad', 'Peruana');
-          showToast(
-            'success',
-            'Datos encontrados',
-            'Información obtenida de SUNAT'
-          );
         }
       } else {
         // Documento no encontrado en RENIEC/SUNAT pero disponible para registro
@@ -203,7 +190,7 @@ function Register() {
 
         if (consultaExterna.error) {
           showToast(
-            'info',
+            'success',
             'Consulta externa',
             'No se encontraron datos externos, complete manualmente'
           );
@@ -217,7 +204,7 @@ function Register() {
       );
       limpiarDatosPersonales();
       showToast(
-        'warning',
+        'error',
         'Advertencia',
         'No se pudo verificar externamente, complete los datos manualmente'
       );
